@@ -7,6 +7,7 @@ quick start
 
 
 .vimrc
+
         set shellslash
         nnoremap    <f2>    :TogglefileHeader<enter>
 
