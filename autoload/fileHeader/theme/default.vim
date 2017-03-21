@@ -56,3 +56,10 @@ let g:fileHeader#theme#default#lisp_sepWidth = 79
 let g:fileHeader#theme#default#lisp_top_sep = ''
 let g:fileHeader#theme#default#lisp_bottle_sep = ''
 let g:fileHeader#theme#default#lisp_prefix = '" '
+
+" sh style comment
+let g:fileHeader#theme#default#sh_sep = '-'
+let g:fileHeader#theme#default#sh_sepWidth = 79
+let g:fileHeader#theme#default#sh_top_sep = '~'
+let g:fileHeader#theme#default#sh_bottle_sep = '~'
+let g:fileHeader#theme#default#sh_prefix = '# '

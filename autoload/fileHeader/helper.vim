@@ -32,12 +32,7 @@
 "
 
 " top strip: delete white lines at top of file
-fun! fileHeader#helper#top_strip(filename) abort
-  if !fileHeader#helper#file_ex(g:fileHeader#source_path. '/' . a:filename)
-    echom a:filename . ' not exist'
-    return
-  endif
-  silent exe "$tabedit " g:fileHeader#source_path . '/' . a:filename
+fun! fileHeader#helper#top_strip() abort
   let s:max_white_lnum = fileHeader#helper#max_w_lnum()
   silent exe "1," s:max_white_lnum . "d"
   silent exe "w"
@@ -61,11 +56,6 @@ endfun
 
 " bottle strip: delete white lines at bottle of file
 fun! fileHeader#helper#bottle_strip(filename) abort
-  if !fileHeader#helper#file_ex(g:fileHeader#source_path. '/' . a:filename)
-    echom a:filename . ' not exist'
-    return
-  endif
-  silent exe "$tabedit " g:fileHeader#source_path . '/' . a:filename
   let s:little_white_lnum = fileHeader#helper#little_w_lnum()
   silent exe s:little_white_lnum ",$" . "d"
   silent exe "w"
@@ -209,9 +199,9 @@ fun! fileHeader#helper#insert_comment_body(style) abort
   call fileHeader#helper#insert_one_line()
 
 " preserve for desc
-  let @z = prefix."\n"
+  let @z = prefix.'(file detail describe)'
   call fileHeader#helper#insert_one_line()
-  call fileHeader#helper#insert_one_line()
+  let b:file_desc_line = b:start_insert_line
   let @z = prefix.repeat(sep, width-len(prefix))
   call fileHeader#helper#insert_one_line()
   exe 'let author_prefix = g:fileHeader#theme#'.theme.'#author_prefix'
@@ -267,3 +257,85 @@ fun! fileHeader#helper#license_insert(theme, prefix) abort
   endfor
   let @z = backup
 endfun
+
+" test if file header has inserted
+fun! fileHeader#helper#inserted(style) abort
+  if a:style == 'c'
+    return fileHeader#helper#c_inserted()
+  endif
+  if a:style == 'py'
+    return fileHeader#helper#py_inserted()
+  endif
+  return fileHeader#helper#sh_or_lisp_inserted(a:style)
+endfun
+
+
+fun! fileHeader#helper#c_inserted() abort
+  let b = 0
+  while b<line('$') && getline(b+1) == ''
+    let b += 1
+  endwhile
+  if b == line('$')
+    return 0
+  endif
+  let scan_line = b
+  if scan_line<line('$') && getline(scan_line+1) !~ '/\*'
+    return 0
+  endif
+  while scan_line<line('$') && getline(scan_line+1) !~ '*/'
+    let scan_line += 1
+  endwhile
+  let b:fileHeader_last_line = scan_line + 1
+  return 1
+endfun
+
+fun! fileHeader#helper#py_inserted() abort
+  let b = 0
+  while b<line('$') && getline(b+1) == ''
+    let b += 1
+  endwhile
+  if b == line('$')
+    return 0
+  endif
+  let scan_line = b
+  let three_quota = 0
+  while scan_line<line('$') && getline(scan_line+1) =~ '^\s*#\s*' || getline(scan_line+1) == ''
+    let scan_line += 1
+  endwhile
+  if scan_line<line('$') && getline(scan_line+1) =~ "'''"
+    let three_quota = "'''"
+    let scan_line += 1
+  endif
+  if scan_line<line('$') && getline(scan_line+1) =~ '"""'
+    let three_quota = '"""'
+    let scan_line += 1
+  endif
+  while scan_line<line('$') && getline(scan_line+1) !~ three_quota
+    let scan_line += 1
+  endwhile
+  let b:fileHeader_last_line = scan_line + 1
+  return 1
+endfun
+
+fun! fileHeader#helper#sh_or_lisp_inserted(style) abort
+  let b = 0
+  while b<line('$') && getline(b+1) == ''
+    let b += 1
+  endwhile
+  let scan_line = b
+  if a:style == 'sh'
+    while scan_line<line('$') && getline(scan_line+1) !~ '^[^\(\s*#\s*\)].*'
+      let scan_line += 1
+    endwhile
+  else
+    while scan_line<line('$') && getline(scan_line+1) !~ '^[^\(\s*"\s*\)].*'
+      let scan_line += 1
+    endwhile
+  endif
+  let b:fileHeader_last_line = scan_line
+  if scan_line == b
+    return 0
+  endif
+  return 1
+endfun
+

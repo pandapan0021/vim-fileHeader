@@ -38,4 +38,4 @@ if &cp||(exists("g:fileHeader_plugin_loaded")) && g:fileHeader_plugin_loaded
 endif
 let g:fileHeader_plugin_loaded = 1
 
-command! TogglefileHeader call fileHeader#insert(&filetype)
+command! TogglefileHeader call fileHeader#Toggle(&filetype)

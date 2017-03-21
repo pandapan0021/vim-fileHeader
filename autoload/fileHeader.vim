@@ -69,14 +69,30 @@ fun fileHeader#insert(filetype) abort
   call fileHeader#helper#comment_insert_before(a:filetype)
   call fileHeader#helper#insert_comment_line(b:comment_style, 'top')
   call fileHeader#helper#insert_comment_body(b:comment_style)
-  let backup = @z
-  let @z = "\n"
-  exe b:start_insert_line.'put z'
-  let b:start_insert_line += 1
   call fileHeader#helper#insert_comment_line(b:comment_style, 'bottle')
 "  fileHeader#comment_insert_after(b:comment_style)
   unlet b:comment_style
   unlet b:start_insert_line
+  exe 'normal '.b:file_desc_line.'G'
+  exe 'normal f('
+  exe 'normal l'
+  exe 'normal R'
+endfun
+
+" remove inserted header
+fun fileHeader#remove(filetype) abort
+  exe '0,'.b:fileHeader_last_line.'d'
+  let b:fileHeader_inserted = 0
+endfun
+
+" toggle
+fun fileHeader#Toggle(filetype) abort
+  let style = fileHeader#helper#filetype_to_style(a:filetype)
+  if fileHeader#helper#inserted(style)
+    call fileHeader#remove(a:filetype)
+  else
+    call fileHeader#insert(a:filetype)
+  endif
 endfun
 
 
