@@ -74,9 +74,8 @@ fun fileHeader#insert(filetype) abort
   unlet b:comment_style
   unlet b:start_insert_line
   exe 'normal '.b:file_desc_line.'G'
+  exe 'normal 0'
   exe 'normal f('
-  exe 'normal l'
-  exe 'normal R'
 endfun
 
 " remove inserted header
