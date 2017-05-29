@@ -90,7 +90,7 @@ fun! fileHeader#helper#file_ex(full_filepath) abort
 endfun
 
 fun! fileHeader#helper#filetype_to_style(filetype) abort
-  let l:type_to_style = { 'c': 'c', 'cpp' : 'c', 'js' : 'c', 'sh': 'sh', 'python': 'py', 'vim': 'lisp',
+  let l:type_to_style = { 'c': 'c', 'cpp' : 'c', 'js' : 'c', 'sh': 'sh', 'python': 'sh', 'vim': 'lisp',
         \ 'scm': 'lisp', 'guile': 'lisp', 'lisp': 'lisp'}
   return get(l:type_to_style, a:filetype, 'lisp')
 endfun
@@ -231,7 +231,7 @@ endfun
 fun! fileHeader#helper#license_insert(theme, prefix) abort
   let backup = @z
   let source_dir = get(g:, 'fileHeader_source', g:fileHeader#source_path)
-  let license = get(g:, 'fileHeader_license', 'MIT')
+  let license = get(g:, 'license', 'MIT')
   if fileHeader#helper#file_ex(source_dir.'/'.license)
     let l:filename = source_dir.'/'.license
   else

@@ -38,7 +38,7 @@ let g:fileHeader_loaded = 1
 if exists("g:fileHeader_source") && g:fileHeader_source != ""
   let g:fileHeader#source_path = g:fileHeader_source
 else
-  let g:fileHeader#source_path = expand("<sfile>:p:h") . '\' . 'fileHeader' . '\' . 'source'
+  let g:fileHeader#source_path = expand("<sfile>:p:h") . '/' . 'fileHeader' . '/' . 'source'
 endif
 
 let g:fileHeader#c_style_begin = "/*"
@@ -94,6 +94,13 @@ fun fileHeader#Toggle(filetype) abort
   endif
 endfun
 
+fun fileHeader#insert_bang(filetype) abort
+	let backup = @z
+	let @z="#!/usr/bin/env ".a:filetype
+	exec "0put z"
+	exec "normal j"
+	let @z = backup
+endfun
 
 let g:confable = {'AUTHOR': "g:author", 'EMAIL': 'g:email', 
       \ 'LICENSE': 'g:license', 'COPYRIGHT': 'g:fileHeader_copyright',  

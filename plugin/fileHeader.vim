@@ -28,14 +28,15 @@
 " LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 " OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 " SOFTWARE.
-
 "
-
+"
+"
 scriptencoding utf-8
 
-if &cp||(exists("g:fileHeader_plugin_loaded")) && g:fileHeader_plugin_loaded
+if &cp||(exists("g:fileHeader_plugin_loaded"))&&g:fileHeader_plugin_loaded
   finish
 endif
 let g:fileHeader_plugin_loaded = 1
 
 command! TogglefileHeader call fileHeader#Toggle(&filetype)
+command! InsertBang call fileHeader#insert_bang(&filetype)
